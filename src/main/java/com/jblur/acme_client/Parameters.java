@@ -1,8 +1,5 @@
 package com.jblur.acme_client;
 
-import com.beust.jcommander.Parameter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,6 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.beust.jcommander.Parameter;
 
 public class Parameters {
 
@@ -35,18 +37,18 @@ public class Parameters {
     private static final Logger LOG = LoggerFactory.getLogger(Parameters.class);
     private final static int COLUMN_SIZE = 80;
     private final static int INDENT_NUM = 6;
-    
+
     /**
     * Generate indent string.
     */
-    private static String generateIndentString(int length) {
+    private static String generateIndentString(final int length) {
         return new String(new char[length]).replace('\0', ' ');
     }
 
     /**
     * Wrap a potentially long line to {COLUMN_SIZE}.
     */
-    private static String wrapString(String s) {
+    private static String wrapString(final String s) {
         int length = COLUMN_SIZE;
         StringBuilder sb = new StringBuilder(s);
         int i = 0;
@@ -55,15 +57,15 @@ public class Parameters {
         }
         sb.append("\n");
         return sb.toString();
-    }    
+    }
 
     /**
     * Format parameters display.
-    * 
+    *
     * Input: String: Parameter names separated with comma;
     *        Boolean: true for required parameters, false for optional parameters.
     */
-    private static String formatParameter(String p, boolean required) {
+    private static String formatParameter(final String p, final boolean required) {
         int length = COLUMN_SIZE;
         StringBuilder fp = new StringBuilder();
         fp.append(generateIndentString(INDENT_NUM));
@@ -77,7 +79,7 @@ public class Parameters {
         }
         fp.append("\n");
         return fp.toString();
-    }    
+    }
 
     /*
      Additional usage information to print to STD_OUT with command line parameter '--help'.
@@ -90,18 +92,18 @@ public class Parameters {
                 + "Most commands also support optional parameters. The following optional parameters "
                 + "can be used with all commands:"));
         MAIN_USAGE.append(wrapString("--log-dir, --log-level, --server-url, --with-agreement-update"));
-        
-        MAIN_USAGE.append("\nSyntax: java -jar acme_client <--command value <--option value <...>>\n"
+
+        MAIN_USAGE.append("\nSyntax: java -jar acme-client <--command value <--option value <...>>\n"
                 + "          [--option value [...]] | --help | --version>\n\n");
         MAIN_USAGE.append(wrapString("The application returns a JSON object which contains either "
                 + "\"status\":\"ok\" or \"status\":\"error\", where sometimes additional information is provided. "
                 + "Detailed information about operations and errors is written to the log file."));
-        
-        MAIN_USAGE.append("\nWARNING:\nBy default acme_client uses Let's Encrypt's production server:\n"
+
+        MAIN_USAGE.append("\nWARNING:\nBy default acme-client uses Let's Encrypt's production server:\n"
                 + "https://acme-v02.api.letsencrypt.org/directory"
                 + "\nIf you want to test the client, use a test server to avoid hitting rate limits:\n"
                 + "--server-url https://acme-staging-v02.api.letsencrypt.org/directory\n");
-        
+
         MAIN_USAGE.append("\nCommands:\n");
         MAIN_USAGE.append("\n* "+COMMAND_ADD_EMAIL+"\n"+wrapString("Add an e-mail address to your account "
                 + "if it isn't already added to your account.")+formatParameter("--account-key, "
@@ -179,19 +181,19 @@ public class Parameters {
                 + formatParameter("--csr, --dns-digests-dir, --ddns-url --domain-tokens", true)
                 + formatParameter("--ddns-host-key, --ddns-record-key, --ddns-token-key,"
                 + " --domain-aliases", false));
-        
+
         MAIN_USAGE.append("\nExamples:\n");
-        MAIN_USAGE.append(wrapString("\njava -jar acme_client.jar --command register -a /etc/pjac/account.key "
+        MAIN_USAGE.append(wrapString("\njava -jar acme-client.jar --command register -a /etc/pjac/account.key "
                 + "--with-agreement-update --email admin@example.com"));
-        MAIN_USAGE.append(wrapString("\njava -jar acme_client.jar --command order-certificate -a "
+        MAIN_USAGE.append(wrapString("\njava -jar acme-client.jar --command order-certificate -a "
                 + "/etc/pjac/account.key -w /etc/pjac/workdir/ --csr /etc/pjac/example.com.csr " +
                 "--well-known-dir /var/www/.well-known/acme-challenge --one-dir-for-well-known"));
-        MAIN_USAGE.append(wrapString("\njava -jar acme_client.jar --command verify-domains -a "
+        MAIN_USAGE.append(wrapString("\njava -jar acme-client.jar --command verify-domains -a "
                 + "/etc/pjac/account.key -w /etc/pjac/workdir/ --csr /etc/pjac/example.com.csr"));
-        MAIN_USAGE.append(wrapString("\njava -jar acme_client.jar --command generate-certificate -a "
+        MAIN_USAGE.append(wrapString("\njava -jar acme-client.jar --command generate-certificate -a "
                 + "/etc/pjac/account.key -w /etc/pjac/workdir/ --csr /etc/pjac/example.com.csr --cert-dir "
                 + "/etc/pjac/certdir/"));
-        MAIN_USAGE.append(wrapString("\njava -jar acme_client.jar --command http-get -csr "
+        MAIN_USAGE.append(wrapString("\njava -jar acme-client.jar --command http-get -csr "
                 + "/etc/pjac/example.com.csr --dns-digests-dir /etc/pjac/digests/ --ddns-url "
                 + "https://dyn.dns.example.com/nic/update --ddns-host-key hostname --ddns-record-key txt "
                 + "--ddns-token-key password --domain-aliases "
@@ -324,16 +326,16 @@ public class Parameters {
     private int dynamicDnsPauseMillis = 1000;
 
     @Parameter(names = {"--domain-aliases"}, description = "A list of mappings of your domain names to " +
-            "the alias records for update when using yuor dynamic DNS service.", 
+            "the alias records for update when using yuor dynamic DNS service.",
             variableArity = true, listConverter = MapEntryConverter.class)
     private List<Map.Entry<String, String>> domainAliases;
 
     @Parameter(names = {"--domain-tokens"}, description = "A list of mappings of your domain names to the " +
-            "tokens for authenticating with your dynamic DNS service.", 
+            "tokens for authenticating with your dynamic DNS service.",
             variableArity = true, listConverter = MapEntryConverter.class)
     private List<Map.Entry<String, String>> domainTokens;
 
-    private boolean checkFile(String path, String errMsg) {
+    private boolean checkFile(final String path, final String errMsg) {
         if (path==null || !new File(path).isFile()) {
             LOG.error(errMsg);
             return false;
@@ -341,7 +343,7 @@ public class Parameters {
         return true;
     }
 
-    private boolean checkDir(String path, String errMsg) {
+    private boolean checkDir(final String path, final String errMsg) {
         if (path==null || !Files.isDirectory(Paths.get(path))) {
             LOG.error(errMsg);
             return false;
@@ -349,7 +351,7 @@ public class Parameters {
         return true;
     }
 
-    private boolean checkString(String str, String errMsg) {
+    private boolean checkString(final String str, final String errMsg) {
         if (str == null || str.equals("")) {
             LOG.error(errMsg);
             return false;
@@ -358,15 +360,15 @@ public class Parameters {
     }
 
     private boolean checkAccountKey() {
-        return checkFile(accountKey, "Your account key file doesn't exist: " + accountKey);
+        return checkFile(getAccountKey(), "Your account key file doesn't exist: " + accountKey);
     }
 
     private boolean checkWorkDir() {
-        return checkDir(workDir, "Your work directory doesn't exist: " + workDir);
+        return checkDir(getWorkDir(), "Your work directory doesn't exist: " + workDir);
     }
 
     private boolean checkCsr() {
-        return checkFile(csr, "Your CSR file doesn't exist: " + csr);
+        return checkFile(getCsr(), "Your CSR file doesn't exist: " + csr);
     }
 
     private boolean checkDomains() {
@@ -378,16 +380,16 @@ public class Parameters {
     }
 
     private boolean checkCertDir() {
-        return checkDir(certDir, "Your certificates' directory doesn't exist: " + certDir);
+        return checkDir(getCertDir(), "Your certificates' directory doesn't exist: " + certDir);
     }
 
 
     private boolean checkWellKnownDir() {
-        return checkDir(wellKnownDir, "Your well-known directory doesn't exist: " + wellKnownDir);
+        return checkDir(getWellKnownDir(), "Your well-known directory doesn't exist: " + wellKnownDir);
     }
 
     private boolean checkDnsDigestsDir() {
-        return checkDir(dnsDigestDir, "Your dns-digests directory doesn't exist: " + dnsDigestDir);
+        return checkDir(getDnsDigestDir(), "Your dns-digests directory doesn't exist: " + dnsDigestDir);
     }
 
     private boolean checkEmail() {
@@ -395,13 +397,13 @@ public class Parameters {
     }
 
     private boolean checkOrderUriList() {
-        return checkFile(Paths.get(workDir, ORDER_URI_LIST).toString(),
+        return checkFile(Paths.get(getWorkDir(), ORDER_URI_LIST).toString(),
                 "Your order uri list file doesn't exists. Seems that it is either wrong working directory or " +
                         "you haven't requested any certificates yet: " + Paths.get(workDir, ORDER_URI_LIST).toString());
     }
 
     private boolean checkCertificateUriList() {
-        return checkFile(Paths.get(workDir, CERTIFICATE_URI_LIST).toString(),
+        return checkFile(Paths.get(getWorkDir(), CERTIFICATE_URI_LIST).toString(),
                 "Your certificate uri list file doesn't exists. Seems that it is either wrong working directory or " +
                         "you haven't got your certificates yet: " + Paths.get(workDir, CERTIFICATE_URI_LIST).toString());
     }
@@ -480,15 +482,15 @@ public class Parameters {
     }
 
     public String getWorkDir() {
-        return workDir;
+        return expandPath(workDir);
     }
 
     public String getAccountKey() {
-        return accountKey;
+        return expandPath(accountKey);
     }
 
     public String getCsr() {
-        return csr;
+        return expandPath(csr);
     }
 
     public Set<String> getDomains() {
@@ -496,19 +498,19 @@ public class Parameters {
     }
 
     public String getCertDir() {
-        return certDir;
+        return expandPath(certDir);
     }
 
     public String getLogDir() {
-        return logDir;
+        return expandPath(logDir);
     }
 
     public String getWellKnownDir() {
-        return wellKnownDir;
+        return expandPath(wellKnownDir);
     }
 
     public String getDnsDigestDir() {
-        return dnsDigestDir;
+        return expandPath(dnsDigestDir);
     }
 
     public String getEmail() {
@@ -552,7 +554,7 @@ public class Parameters {
     }
 
     public String getConfigFilename() {
-        return configFilename;
+        return expandPath(configFilename);
     }
 
     public String getDynamicDnsUrl() {
@@ -570,7 +572,7 @@ public class Parameters {
     public String getDynamicDnsTokenKey() {
         return dynamicDnsTokenKey;
     }
-    
+
     public int getDynamicDnsPauseMillis() {
         return dynamicDnsPauseMillis;
     }
@@ -582,8 +584,8 @@ public class Parameters {
     public Map<String, String> getDomainTokens() {
         return toMap(domainTokens);
     }
-    
-    protected static Map<String, String> toMap(List<Map.Entry<String, String>> list) {
+
+    protected static Map<String, String> toMap(final List<Map.Entry<String, String>> list) {
         Map<String, String> map = new HashMap<String, String>();
         if (list != null) {
             for (Map.Entry<String, String> entry : list) {
@@ -591,5 +593,21 @@ public class Parameters {
             }
         }
         return map;
+    }
+
+    /**
+     * Expands a path with user home location information.
+     *
+     * @param path the path to expand.
+     * @return the expanded path.
+     */
+    protected static String expandPath(final String path) {
+        if (path.startsWith("~" + File.separator)) {
+            return System.getProperty("user.home") + path.substring(1);
+        } else if (path.startsWith("~")) {
+            throw new UnsupportedOperationException("Home dir expansion not implemented for explicit usernames.");
+        } else {
+            return path;
+        }
     }
 }

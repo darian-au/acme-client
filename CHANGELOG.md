@@ -28,6 +28,7 @@ This is a minor release with added convenience features. Also includes upgrades 
     - The `domain-tokens` parameter is the password for your dynamic DNS update service. 
     - Domain alias mappings are supported if your DNS maps a CNAME to an alternate record.
     - The `domain-tokens` and `domain-aliases` parameters are specified as a comma separated list of `name=value` pairs.
+ * Home directory name expansion for config parameters with a tilde.
  * Release artifact as ZIP, alternative release for shaded uber JAR is still included.
     - Shading required removal of signing information from the dependency JARs, lessening the trustworthiness that the dependencies hadn't been tampered with in some way.
     - Just unzip the release ZIP file and run the JAR in exactly the same way you would have run the uber JAR.
@@ -47,6 +48,7 @@ This is a minor release with added convenience features. Also includes upgrades 
 
  * Update `acme4j` `2.7` -> `2.16`
  * Read version number information from JAR Manifest.
+ * Rename main jar with kebab case.
 
 ### Security
 

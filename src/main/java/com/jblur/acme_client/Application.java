@@ -1,23 +1,24 @@
 package com.jblur.acme_client;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
-
-import com.beust.jcommander.IDefaultProvider;
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.beust.jcommander.IDefaultProvider;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class Application {
 
@@ -28,15 +29,15 @@ public class Application {
 
     private static ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         Parameters parameters = new Parameters();
 
         JCommander jCommander = JCommander.newBuilder()
                 .addObject(parameters)
                 .build();
-        
+
         IDefaultProvider defaultProvider = configureDefaultProvider(args, parameters.getConfigFilename());
-        
+
         if (defaultProvider != null) {
             jCommander.setDefaultProvider(defaultProvider);
         }
@@ -49,7 +50,7 @@ public class Application {
             return;
         }
 
-        jCommander.setProgramName("java -jar acme_client.jar");
+        jCommander.setProgramName("java -jar acme-client.jar");
 
         if (parameters.isHelp()) {
             printHelpInfo(jCommander);
@@ -82,10 +83,10 @@ public class Application {
      * @param configFilename the default name of the configuration file.
      * @return a default property provider if a configuration file could be found, null otherwise.
      */
-    private static IDefaultProvider configureDefaultProvider(String[] args, String configFilename) {
+    private static IDefaultProvider configureDefaultProvider(final String[] args, final String configFilename) {
         try {
             String[] paramNames = Parameters.class.getDeclaredField("configFilename").getAnnotation(Parameter.class).names();
-            
+
             if (paramNames != null && paramNames.length > 0) {
                 for (int index = 0; index < args.length; index++) {
                     for (String paramName : paramNames) {
@@ -95,7 +96,7 @@ public class Application {
                     }
                 }
             }
-            
+
             return new PropertyFileDefaultProvider(configFilename);
         }
         catch (NoSuchFieldException | SecurityException | ParameterException ex) {
@@ -104,7 +105,7 @@ public class Application {
         }
     }
 
-    private static void configureLogger(String logDir, String logLevel, String logbackConf) {
+    private static void configureLogger(String logDir, final String logLevel, final String logbackConf) {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         try {
             JoranConfigurator configurator = new JoranConfigurator();
@@ -123,7 +124,7 @@ public class Application {
         StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     }
 
-    private static boolean checkLogLevel(String logLevel) {
+    private static boolean checkLogLevel(final String logLevel) {
         String[] logLevels = new String[]{"OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"};
         boolean valid = false;
         for (String strLogLevel : logLevels) {
@@ -135,7 +136,7 @@ public class Application {
         return valid;
     }
 
-    private static void printHelpInfo(JCommander jCommander){
+    private static void printHelpInfo(final JCommander jCommander){
         StringBuilder usage = new StringBuilder();
         jCommander.usage(usage);
         System.out.println(usage.toString());
@@ -145,7 +146,7 @@ public class Application {
 
     private static void printVersion(){
         String implVersion = Application.class.getPackage().getImplementationVersion();
-        
+
         Properties prop = new Properties();
         try {
             prop.load(classloader.getResourceAsStream(APPLICATION_PROPS));
@@ -158,7 +159,7 @@ public class Application {
         }
     }
 
-    private static void setupLogDirectory(Parameters parameters){
+    private static void setupLogDirectory(final Parameters parameters){
         if (!Files.isDirectory(Paths.get(parameters.getLogDir()))) {
             LOG.info("Specified log directory doesn't exist: " + parameters.getLogDir() +
                     "\nTrying to create the log directory.");
