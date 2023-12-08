@@ -4,11 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
-
-No changes yet.
-
-## [3.1.0-UNRELEASED] - 2023-MM-DD
+## [3.1.0] - 2023-12-08
 
 This is a minor release with added convenience features. Also includes upgrades to dependencies.
 
